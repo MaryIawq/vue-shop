@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <header class="flex justify-between border-b border-gray-300 pr-12 py-10 pl-4">
+  <header class="flex justify-between border-b border-gray-200 pr-12 py-10 pl-4">
       <div class="flex items-center gap-4" id="logo">
         <img src="/logo.png" alt="logo" class="w-16 h-16">
         <div>
