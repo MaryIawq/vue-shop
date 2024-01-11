@@ -6,12 +6,19 @@ defineProps({
   price: Number,
   isFavorite: Boolean,
   isAdded: Boolean,
+  onClickAdd: Function,
+  onClickFavorite: Function,
 })
+
 </script>
 
 <template>
   <div class="relative bg-white border border-slate-100 rounded-3xl p-8 cursor-pointer transition hover:-translate-y-1.5 hover:shadow-xl flex flex-col">
-    <img src="/added-to-fav.ico" alt="added to favorites" class="absolute top-8 left-8 max-w-9">
+    <img
+        @click="onClickFavorite"
+        :src="!isFavorite ? '/favorites.ico' : '/added-to-fav.ico'"
+        alt="is favorite"
+        class="absolute top-8 left-8 max-w-9">
 
     <img :src="imageUrl" alt="orange chocolate" class="w-72">
 
@@ -23,7 +30,11 @@ defineProps({
           <span class="text-slate-600 mb-1">{{ weight }} g</span>
           <b class="text-slate-600">{{ price }} ₽</b>
         </div>
-        <img :src="isAdded ? '/plus.svg' : '/tick.ico'" alt="plus" class="max-w-8 max-h-8">
+        <img
+            @click="onClickAdd"
+            :src="!isAdded ? '/plus-add-to-cart.ico' : '/tick.ico'"
+            alt="is added"
+            class="max-w-8 max-h-8">
       </div>
     </div>
   </div>
