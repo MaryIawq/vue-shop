@@ -45,7 +45,7 @@
   @media (max-width: 375px) {
     ul {
       display: flex;
-      align-items: start;
+      align-items: flex-start;
       margin-top: 30px;
     }
     header {
