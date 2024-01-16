@@ -1,7 +1,7 @@
 <script setup>
 import cardComponent from './card-component.vue'
 defineProps({
-  items: Array
+  items: Array,
 })
 const onClickAdd = () => {
   alert('Add!!!')
@@ -17,6 +17,12 @@ const onClickAdd = () => {
         :image-url="item.imageUrl"
         :price="item.price"
         :weight="item.weight"
+        :is-sugar-free="item.isSugarFree"
+        :is-favorite="item.isFavorite"
+        :protein="item.protein"
+        :fat="item.fat"
+        :carbs="item.carbs"
+        :kkal="item.kkal"
         :on-click-add="onClickAdd"></card-component>
   </div>
 </template>
