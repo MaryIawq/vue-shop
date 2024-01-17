@@ -1,6 +1,8 @@
 <script setup>
-import { ref } from "vue";
+import {ref} from "vue";
+
 defineProps({
+  id: Number,
   title: String,
   imageUrl: String,
   weight: Number,
@@ -12,16 +14,20 @@ defineProps({
   fat: Number,
   carbs: Number,
   kkal: Number,
-  onClickAdd: Function,
   onClickFavorite: Function,
+  onClickAdd: Function
 })
 
+
 let showEnergyValueTooltip = ref(false)
-function toggleEnergyValueTooltip () {
+
+function toggleEnergyValueTooltip() {
   showEnergyValueTooltip.value = !showEnergyValueTooltip.value
 }
+
 let showSugarFreeTooltip = ref(false)
-function toggleSugarFreeTooltip () {
+
+function toggleSugarFreeTooltip() {
   showSugarFreeTooltip.value = !showSugarFreeTooltip.value
 }
 </script>
@@ -62,8 +68,11 @@ function toggleSugarFreeTooltip () {
                class="absolute transition mt-1 w-6 h-6 opacity-60 hover:rotate-45 hover:opacity-90">
         </div>
         <div v-if="showEnergyValueTooltip"
-            class="absolute z-30 rounded-l-2xl rounded-b-2xl bg-slate-200 mr-16 text-slate-700 font-thin p-2 mt-10 shadow-2xl">
-           <p>protein:{{ protein }}</p><p>fat:{{ fat }}</p><p>carbs:{{ carbs }}</p><p>kkal:{{ kkal }}</p>
+             class="absolute z-30 rounded-l-2xl rounded-b-2xl bg-slate-200 mr-16 text-slate-700 font-thin p-2 mt-10 shadow-2xl">
+          <p>protein:{{ protein }}</p>
+          <p>fat:{{ fat }}</p>
+          <p>carbs:{{ carbs }}</p>
+          <p>kkal:{{ kkal }}</p>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 <script setup>
+
 import {onMounted, ref, watch, reactive, provide} from "vue";
 import axios from "axios";
 import headerComponent from './components/header-component.vue'
@@ -7,20 +8,29 @@ import drawerComponent from './components/drawer-component.vue'
 import categoriesComponent from './components/categories-component.vue'
 
 const items = ref([]);
-let categoriesItems = ref([]);
-
-const filters = reactive({
-  sortBy: 'title',
-  searchQuery: '',
-});
-
-const onChangeSelect = event => {
-  filters.sortBy = event.target.value
+//drawer functional
+const drawerOpen = ref(false)
+const closeDrawer = () => {
+  drawerOpen.value = false
 }
-const onChangeSearchInput = event => {
-  filters.searchQuery = event.target.value
+const openDrawer = () => {
+  drawerOpen.value = true
 }
+const cart = ref([])
+const addToCart = (item) => {
+  if (!item.isAdded) {
+    cart.value.push(item)
+    item.isAdded = true
+  } else {
+    cart.value.splice(cart.value.indexOf(item), 1)
+    item.isAdded = false
+  }
+}
+provide('cart', {
+  cart
+})
 
+//favorites functional
 const fetchFavorites = async () => {
   try {
     const {data: favorites} = await axios.get(`https://af3c46b46dc5a452.mokky.dev/favorites`)
@@ -40,9 +50,50 @@ const fetchFavorites = async () => {
     console.log(err);
   }
 }
-
 const addToFavorite = async (item) => {
-  item.isFavorite = true;
+  try {
+    if (!item.isFavorite) {
+      const obj = {
+        parentId: item.id
+      };
+      item.isFavorite = true;
+      const {data} = await axios.post(`https://af3c46b46dc5a452.mokky.dev/favorites`, obj);
+      item.favoriteId = data.id;
+    } else {
+      item.isFavorite = false;
+      await axios.delete(`https://af3c46b46dc5a452.mokky.dev/favorites/${item.favoriteId}`)
+      item.favoriteId = null;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+const filters = reactive({
+  sortBy: 'title',
+  searchQuery: '',
+});
+
+
+//categories functional
+let categoriesItems = ref([]);
+onMounted(async () => {
+  try {
+    const {data} = await axios.get('https://af3c46b46dc5a452.mokky.dev/categories')
+    categoriesItems.value = data;
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+
+//filters functional
+
+const onChangeSelect = event => {
+  filters.sortBy = event.target.value
+  fetchFavorites()
+}
+const onChangeSearchInput = event => {
+  filters.searchQuery = event.target.value
 }
 
 const fetchItems = async () => {
@@ -55,65 +106,48 @@ const fetchItems = async () => {
     }
 
     let response;
-    if (params.sortBy === 'isSugarFree=1') {
-      const url = 'https://af3c46b46dc5a452.mokky.dev/items?isSugarFree=1';
-      response = await axios.get(url);
-    } else {
-      const url = 'https://af3c46b46dc5a452.mokky.dev/items';
-      response = await axios.get(url, {params: params});
-    }
-
+    const url = 'https://af3c46b46dc5a452.mokky.dev/items';
+    response = await axios.get(url, {params: params});
     items.value = response.data.map((obj) => ({
       ...obj,
       isFavorite: false,
+      favoriteId: null,
       isAdded: false,
     }));
   } catch (err) {
     console.error(err);
   }
+  await fetchFavorites()
 };
-
 const updateItems = async (newItems) => {
   items.value = newItems;
-}
 
+  await fetchFavorites()
+}
 onMounted(async () => {
   await fetchItems();
   await fetchFavorites();
 });
-
-onMounted(async () => {
-  try {
-    const {data} = await axios.get('https://af3c46b46dc5a452.mokky.dev/categories')
-    categoriesItems.value = data;
-  } catch (err) {
-    console.log(err)
-  }
-
-})
 watch(filters, fetchItems);
 
-provide('addToFavorite', addToFavorite)
 
 </script>
 
 
 <template>
   <div class="w-5/6 sm:w-11/12 m-auto bg-white rounded-2xl shadow-2xl mt-14">
-    <header-component></header-component>
-<!--    <drawer-component></drawer-component>-->
+    <header-component @open-drawer="openDrawer"></header-component>
+    <drawer-component v-if="drawerOpen" @close-drawer="closeDrawer"></drawer-component>
     <div class="p-10 main">
-      <div class="flex justify-between items-center" id="filterMenu">
-        <h2 class="text-xl font-bold text-slate-500 mb-8 mx-5">delivery every day 11 am to 9 pm</h2>
-        <div class="flex gap-5 mb-7" id="inputAndSelect">
+      <div class="filter__menu flex justify-between items-center">
+        <div class="input__and__select flex gap-5 mb-7">
 
           <select
               @change="onChangeSelect"
-              class="py-1.5 px-3 border rounded-md outline-none text-slate-500 font-bold">
+              class="py-1.5 px-3 border rounded-md outline-none text-slate-500 font-bold cursor-pointer">
             <option value="title">by name</option>
             <option value="price">ascending in price</option>
             <option value="-price">descending in price</option>
-            <option value="isSugarFree=1">sugar free</option>
           </select>
           <div class="relative">
             <img
@@ -125,15 +159,20 @@ provide('addToFavorite', addToFavorite)
                 placeholder="search..."
                 class="border rounded-md py-1.5 pl-12 pr-4 outline-none focus:border-slate-400"/>
           </div>
+
         </div>
       </div>
 
       <categories-component
-          :categoriesItems="categoriesItems"
-          @updateItems="updateItems"
+          :categories-items="categoriesItems"
+          @update-items="updateItems"
+          @fetch-items="fetchItems"
       ></categories-component>
       <div class="mt-8">
-        <card-list-component :items="items"></card-list-component>
+        <card-list-component
+            :items="items"
+            @add-to-cart="addToCart"
+            @add-to-favorite="addToFavorite"></card-list-component>
       </div>
 
     </div>
@@ -147,19 +186,19 @@ provide('addToFavorite', addToFavorite)
 
 
 @media (max-width: 768px) {
-  #inputAndSelect {
+  .input__and__select {
     flex-direction: column;
     margin-bottom: 20px;
   }
 
-  #inputAndSelect select {
+  select {
     width: 100%;
     margin-bottom: 1rem;
   }
 }
 
 @media (max-width: 600px) {
-  #filterMenu {
+  .filter__menu {
     flex-direction: column;
     display: flex;
 

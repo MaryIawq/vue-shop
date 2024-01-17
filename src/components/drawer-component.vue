@@ -1,5 +1,8 @@
 <script setup>
+import {defineEmits} from "vue";
 import cartListComponent from './cart-list-component.vue'
+
+const emit = defineEmits(['closeDrawer']);
 </script>
 
 <template>
@@ -8,13 +11,15 @@ import cartListComponent from './cart-list-component.vue'
   </div>
   <div class="bg-sky-50 shadow-2xl w-full h-full fixed top-0 z-20 p-4 md:w-4/12 md:right-0 md:rounded-l-xl md:p-10"
        id="shoppingCartBlock">
-    <div class="flex items-center gap-5 mb-5">
+    <div class="drawer__head flex items-center gap-5 mb-5">
       <img class="w-9 h-9 opacity-70 cursor-pointer rotate-180 transition hover:opacity-90 hover:-translate-x-2"
-           src="/right-arrow.ico" alt="right arrow">
+           src="/right-arrow.ico"
+           @click="() => emit('closeDrawer')"
+           alt="right arrow">
       <h1 class="text-slate-600 text-2xl text-center font-bold">shopping cart</h1>
     </div>
     <cart-list-component></cart-list-component>
-    <div class="flex flex-col gap-4 mt-7">
+    <div class="costing__container flex flex-col gap-4 mt-7">
       <div class="flex gap-2 text-slate-600">
         <span>Discount:</span>
         <div class="flex-1 border-b border-dashed"></div>
@@ -47,6 +52,17 @@ import cartListComponent from './cart-list-component.vue'
     padding: 4px;
     width: 65%;
     height: 100%;
+    border-radius: 20px 0px 0px 20px / 30px 0px 0px 20px;
+  }
+
+  .drawer__head {
+    margin-left: 15px;
+    margin-top: 15px;
+  }
+
+  .costing__container {
+    margin-left: 20px;
+    margin-right: 20px;
   }
 }
 
@@ -55,6 +71,10 @@ import cartListComponent from './cart-list-component.vue'
     padding: 10px;
     width: 100%;
     height: fit-content;
+    border-radius: 0px 0px 20px 20px / 0px 0px 20px 20px;
+  }
+  .costing__container {
+   margin-bottom: 20px;
   }
 }
 </style>
