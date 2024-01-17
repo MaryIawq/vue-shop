@@ -78,7 +78,7 @@ function toggleSugarFreeTooltip () {
             @click="onClickAdd"
             :src="!isAdded ? '/plus-add-to-cart.ico' : '/tick.ico'"
             alt="is added"
-            class="w-8 h-8 z-20 opacity-75 hover:opacity-100">
+            class="w-8 h-8 opacity-75 hover:opacity-100">
       </div>
     </div>
   </div>

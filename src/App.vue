@@ -6,19 +6,8 @@ import cardListComponent from './components/card-list-component.vue'
 import drawerComponent from './components/drawer-component.vue'
 import categoriesComponent from './components/categories-component.vue'
 
-
 const items = ref([]);
 let categoriesItems = ref([]);
-
-onMounted(async () => {
-  try {
-    const {data} = await axios.get('https://af3c46b46dc5a452.mokky.dev/categories')
-    categoriesItems.value = data;
-  } catch (err) {
-    console.log(err)
-  }
-
-})
 
 const filters = reactive({
   sortBy: 'title',
@@ -92,6 +81,16 @@ onMounted(async () => {
   await fetchItems();
   await fetchFavorites();
 });
+
+onMounted(async () => {
+  try {
+    const {data} = await axios.get('https://af3c46b46dc5a452.mokky.dev/categories')
+    categoriesItems.value = data;
+  } catch (err) {
+    console.log(err)
+  }
+
+})
 watch(filters, fetchItems);
 
 provide('addToFavorite', addToFavorite)
@@ -102,11 +101,10 @@ provide('addToFavorite', addToFavorite)
 <template>
   <div class="w-5/6 sm:w-11/12 m-auto bg-white rounded-2xl shadow-2xl mt-14">
     <header-component></header-component>
-    <!--    <drawer-component></drawer-component>-->
-
+<!--    <drawer-component></drawer-component>-->
     <div class="p-10 main">
       <div class="flex justify-between items-center" id="filterMenu">
-        <h2 class="text-3xl font-bold text-slate-500 mb-8 mr-3">all sweets</h2>
+        <h2 class="text-xl font-bold text-slate-500 mb-8 mx-5">delivery every day 11 am to 9 pm</h2>
         <div class="flex gap-5 mb-7" id="inputAndSelect">
 
           <select
@@ -127,17 +125,13 @@ provide('addToFavorite', addToFavorite)
                 placeholder="search..."
                 class="border rounded-md py-1.5 pl-12 pr-4 outline-none focus:border-slate-400"/>
           </div>
-<!--          <form class="mt-2">-->
-<!--            <input type="checkbox" class="">-->
-<!--            <label class="font-bold text-slate-500 ml-1">sugar free</label>-->
-<!--          </form>-->
         </div>
       </div>
 
-        <categories-component
-            :categoriesItems="categoriesItems"
-            @updateItems="updateItems"
-        ></categories-component>
+      <categories-component
+          :categoriesItems="categoriesItems"
+          @updateItems="updateItems"
+      ></categories-component>
       <div class="mt-8">
         <card-list-component :items="items"></card-list-component>
       </div>

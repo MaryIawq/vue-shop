@@ -32,7 +32,7 @@ import cartListComponent from './cart-list-component.vue'
       </div>
       <button
           disabled=""
-          class="bg-lime-300 mt-4 w-full disabled:bg-slate-300 rounded-2xl py-3 mt-5 transition font-bold text-slate-700 cursor-pointer hover:bg-lime-400 active:bg-lime-500">
+          class="bg-lime-300 w-full disabled:bg-slate-300 rounded-2xl py-3 mt-5 transition font-bold text-slate-700 cursor-pointer hover:bg-lime-400 active:bg-lime-500">
         place an order
       </button>
     </div>
