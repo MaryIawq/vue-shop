@@ -1,0 +1,10 @@
+{
+    "port": 8080,
+    "mysql": {
+        "username": "db_user",
+        "password": "db_pass",
+        "database": "db_name",
+        "host": "mysql",
+        "port": 3306
+    }
+}
