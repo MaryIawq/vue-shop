@@ -23,10 +23,20 @@ const fetchCategories = async (idx) => {
   }
 };
 
+const showAll = async () => {
+  currentCategoryIdx.value = -1
+  emits('fetchItems')
+}
+
 </script>
 
 <template>
   <div class="border rounded-2xl p-2 flex flex-wrap gap-5 justify-around text-slate-600 hover:text-slate-900">
+    <button
+        @click="showAll()"
+        class="font-bold text-slate-600 border border-slate-200 rounded-2xl transition p-2 active:bg-orange-100 hover:shadow-md hover:-translate-y-0.5">
+      show all
+    </button>
     <button v-for="(categoryItem, idx) in categoriesItems"
             @click="fetchCategories(idx)"
             :class="{
