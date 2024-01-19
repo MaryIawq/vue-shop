@@ -1,13 +1,27 @@
 <script setup>
-import {defineEmits} from "vue";
+import {computed} from "vue"
 import cartListComponent from './cart-list-component.vue'
+import infoBlock from "@/components/infoblock.vue";
 
-const emit = defineEmits(['closeDrawer']);
+const emit = defineEmits(['closeDrawer, createOrder']);
+const props = defineProps({
+  finalPrice: Number,
+  totalPrice: Number,
+  deliveryPrice: Number,
+  discountPrice: Number,
+  cartButtonDisabled: Boolean
+})
+
+const checkout = async () => {
+}
+
+
 </script>
 
 <template>
 
-  <div class="fixed top-0 left-0 h-full w-full bg-slate-900 z-10 opacity-60">
+  <div @click="() => emit('closeDrawer')"
+      class="fixed top-0 left-0 h-full w-full bg-slate-900 z-10 opacity-60">
   </div>
   <div class="bg-sky-50 shadow-2xl w-full h-full fixed top-0 z-20 p-4 md:w-4/12 md:right-0 md:rounded-l-xl md:p-10"
        id="shoppingCartBlock">
@@ -18,35 +32,62 @@ const emit = defineEmits(['closeDrawer']);
            alt="right arrow">
       <h1 class="text-slate-600 text-2xl text-center font-bold">shopping cart</h1>
     </div>
-    <cart-list-component></cart-list-component>
-    <div class="costing__container flex flex-col gap-4 mt-7">
+    <div v-if="!totalPrice"
+        class="h-full flex items-center">
+      <infoBlock
+          class="mb-36"
+          @close-drawer="() => emit('closeDrawer')"
+          title="your shopping cart is empty"
+          description="go to store"
+          image-url="/sad-smile.png"></infoBlock>
+    </div>
+
+    <cart-list-component v-if="totalPrice"></cart-list-component>
+
+    <div
+        v-if="totalPrice"
+        class="costing__container flex flex-col gap-4 mt-7">
+      <div class="flex gap-2 text-slate-500 font-bold uppercase mb-3">
+        <span>Promocode:</span>
+        <input type="text"
+               class="w-28 mb-2 text-green-700 border uppercase rounded-2xl outline-none focus:border-slate-400"/>
+        <img class="w-7 h-7 cursor-pointer transition opacity-75 hover:opacity-100" src="/apply.png" alt="apply"/>
+      </div>
+      <div class="flex gap-2 text-slate-600">
+        <span>Order amount:</span>
+        <div class="flex-1 border-b border-dashed"></div>
+        <span>{{ totalPrice }}₽</span>
+      </div>
       <div class="flex gap-2 text-slate-600">
         <span>Discount:</span>
         <div class="flex-1 border-b border-dashed"></div>
-        <span>316₽</span>
+        <span>{{ discountPrice }}₽</span>
       </div>
       <div class="flex gap-2 text-slate-600">
         <span>Delivery:</span>
         <div class="flex-1 border-b border-dashed"></div>
-        <span>98₽</span>
+        <span>{{ deliveryPrice }}₽</span>
       </div>
       <div class="flex gap-2 font-bold text-slate-600">
         <span>Total:</span>
         <div class="flex-1 border-b border-dashed"></div>
-        <span>1132₽</span>
+        <span>{{ finalPrice }}₽</span>
       </div>
       <button
-          disabled=""
+          @click="() => emit('createOrder')"
+          :disabled="cartButtonDisabled"
           class="bg-lime-300 w-full disabled:bg-slate-300 rounded-2xl py-3 mt-5 transition font-bold text-slate-700 cursor-pointer hover:bg-lime-400 active:bg-lime-500">
         place an order
       </button>
+      <div id="payment-form"></div>
     </div>
 
   </div>
 </template>
 
 <style scoped>
-@media (max-width: 768px) {
+
+@media (max-width: 900px) {
   #shoppingCartBlock {
     right: 0;
     padding: 4px;
@@ -73,8 +114,9 @@ const emit = defineEmits(['closeDrawer']);
     height: fit-content;
     border-radius: 0px 0px 20px 20px / 0px 0px 20px 20px;
   }
+
   .costing__container {
-   margin-bottom: 20px;
+    margin-bottom: 20px;
   }
 }
 </style>

@@ -1,6 +1,8 @@
 <script setup>
 const emit = defineEmits(['openDrawer'])
-
+defineProps({
+  totalPrice: Number
+})
 </script>
 
 <template>
@@ -10,13 +12,12 @@ const emit = defineEmits(['openDrawer'])
       <div>
         <h1 class="text-2xl font-bold uppercase text-slate-700">candy store</h1>
         <p class="text-lg text-slate-500">store for the best sweets</p>
-<!--        <p class="text-sm font-thin text-slate-400">delivery every day 11 am to 9 pm</p>-->
       </div>
     </div>
     <ul class="flex items-center gap-11">
       <li @click="() => emit('openDrawer')" class="flex items-center cursor-pointer gap-4 mr-5">
         <img src="/cart.svg" class="max-w-7 opacity-70 hover:opacity-100" alt="cart">
-        <p class="text-slate-600 hover:text-slate-800">1456₽</p>
+        <p class="text-slate-600 hover:text-slate-800">{{ totalPrice }}₽</p>
       </li>
       <li class="flex items-center cursor-pointer gap-3">
         <img src="/favorites.ico" class="max-w-7 opacity-75 hover:opacity-100" alt="favorites">
@@ -26,6 +27,7 @@ const emit = defineEmits(['openDrawer'])
         <img src="/profile.svg" class="max-w-7 opacity-75 hover:opacity-100" alt="">
         <p class="text-slate-600 hover:text-slate-800">profile</p>
       </li>
+
     </ul>
   </header>
 </template>

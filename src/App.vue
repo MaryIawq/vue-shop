@@ -1,6 +1,6 @@
 <script setup>
 
-import {onMounted, ref, watch, reactive, provide} from "vue";
+import {onMounted, ref, watch, reactive, provide, computed} from "vue";
 import axios from "axios";
 import headerComponent from './components/header-component.vue'
 import cardListComponent from './components/card-list-component.vue'
@@ -17,18 +17,74 @@ const openDrawer = () => {
   drawerOpen.value = true
 }
 const cart = ref([])
+
 const addToCart = (item) => {
+  cart.value.push(item)
+  item.isAdded = true
+}
+const removeFromCart = (item) => {
+  cart.value.splice(cart.value.indexOf(item), 1)
+  item.isAdded = false
+}
+
+const onClickAddPlus = (item) => {
   if (!item.isAdded) {
-    cart.value.push(item)
-    item.isAdded = true
+    addToCart(item)
   } else {
-    cart.value.splice(cart.value.indexOf(item), 1)
-    item.isAdded = false
+    removeFromCart(item)
   }
 }
-provide('cart', {
-  cart
+
+const totalPrice = computed(() => cart.value.reduce((acc, item) => acc + item.price, 0))
+const discountPrice = computed(() => Math.round((totalPrice.value * 9) / 100))
+const deliveryPrice = computed(() => Math.round((totalPrice.value * 5) / 100))
+
+const finalPrice = computed(() => {
+  const total = totalPrice.value + deliveryPrice.value - discountPrice.value;
+  return Math.max(0, total);
+});
+
+watch(cart, () => {
+  items.value = items.value.map((item) => ({
+    ...item,
+    isAdded: false
+  }))
 })
+
+provide('cart', {
+  cart,
+  addToCart,
+  removeFromCart,
+})
+watch(cart, () => {
+      localStorage.setItem('cart', JSON.stringify(cart.value))
+    },
+    {deep: true}
+)
+
+//orders fun
+
+const cartButtonDisabled = computed(() =>
+    isCreatingOrder.value ? true : totalPrice.value ? false : true
+)
+const createOrder = async () => {
+  try {
+    isCreatingOrder.value = true
+    const {data} = await axios.post(`https://af3c46b46dc5a452.mokky.dev/orders`, {
+      items: cart.value,
+      totalPrice: totalPrice.value
+    })
+
+    cart.value = []
+
+    return data
+  } catch (e) {
+    console.log(e)
+  } finally {
+    isCreatingOrder.value = false
+  }
+}
+const isCreatingOrder = ref(false)
 
 //favorites functional
 const fetchFavorites = async () => {
@@ -125,8 +181,17 @@ const updateItems = async (newItems) => {
   await fetchFavorites()
 }
 onMounted(async () => {
+  const localCart = localStorage.getItem('cart');
+  cart.value = localCart ? JSON.parse(localCart) : []
+
+
   await fetchItems();
   await fetchFavorites();
+
+  items.value = items.value.map((item) => ({
+    ...item,
+    isAdded: cart.value.some((cartItem) => cartItem.id === item.id)
+  }))
 });
 watch(filters, fetchItems);
 
@@ -136,8 +201,21 @@ watch(filters, fetchItems);
 
 <template>
   <div class="w-5/6 sm:w-11/12 m-auto bg-white rounded-2xl shadow-2xl mt-14">
-    <header-component @open-drawer="openDrawer"></header-component>
-    <drawer-component v-if="drawerOpen" @close-drawer="closeDrawer"></drawer-component>
+    <header-component
+        :final-price="finalPrice"
+        :total-price="totalPrice"
+        @open-drawer="openDrawer"></header-component>
+    <div class="cart-container overflow-y-auto overflow-x-hidden">
+      <drawer-component v-if="drawerOpen"
+                        :final-price="finalPrice"
+                        :total-price="totalPrice"
+                        :delivery-price="deliveryPrice"
+                        :discount-price="discountPrice"
+                        @create-order="createOrder"
+                        :cart-button-disabled="cartButtonDisabled"
+                        @close-drawer="closeDrawer"></drawer-component>
+    </div>
+
     <div class="p-10 main">
       <div class="filter__menu flex justify-between items-center">
         <div class="input__and__select flex gap-5 mb-7">
@@ -171,7 +249,7 @@ watch(filters, fetchItems);
       <div class="mt-8">
         <card-list-component
             :items="items"
-            @add-to-cart="addToCart"
+            @add-to-cart="onClickAddPlus"
             @add-to-favorite="addToFavorite"></card-list-component>
       </div>
 
@@ -183,7 +261,9 @@ watch(filters, fetchItems);
 
 
 <style scoped>
-
+.cart-container {
+  max-height: 60vh;
+}
 
 @media (max-width: 768px) {
   .input__and__select {

@@ -8,6 +8,7 @@ defineProps({
   onClickFavorite: Function,
   onClickAdd: Function
 })
+const emit = defineEmits(['onClickRemove'])
 </script>
 
 <template>
@@ -26,7 +27,8 @@ defineProps({
       </div>
       <img
           src="/close.ico"
-          class="w-5 h-5 opacity-60 transition cursor-pointer hover:opacity-90"
+          @click="emit('onClickRemove')"
+          class="w-6 h-6 opacity-60 transition cursor-pointer hover:opacity-90"
           alt="close">
     </div>
 
