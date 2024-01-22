@@ -46,16 +46,20 @@ defineProps({
     justify-content: flex-start;
   }
 
-  @media (max-width: 375px) {
+  @media (max-width: 385px) {
     ul {
       display: flex;
       align-items: flex-start;
-      margin-top: 30px;
+      font-size: 15px;
+      margin-top: 5px;
+    }
+    li>img {
+      height: 20px;
+      width: 20px;
     }
     header {
       display: flex;
-      flex-direction: column;
-      height: 100%;
+      flex-wrap: wrap;
     }
   }
 }
