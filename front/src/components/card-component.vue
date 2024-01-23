@@ -1,7 +1,7 @@
 <script setup>
 import {ref} from "vue";
 
-defineProps({
+const props = defineProps({
   id: Number,
   title: String,
   imageUrl: String,
@@ -19,17 +19,16 @@ defineProps({
 })
 
 
+/*/TOOLTIPS START/*/
 let showEnergyValueTooltip = ref(false)
-
 function toggleEnergyValueTooltip() {
   showEnergyValueTooltip.value = !showEnergyValueTooltip.value
 }
-
 let showSugarFreeTooltip = ref(false)
-
 function toggleSugarFreeTooltip() {
   showSugarFreeTooltip.value = !showSugarFreeTooltip.value
 }
+/*/TOOLTIPS END/*/
 </script>
 
 <template>
