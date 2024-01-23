@@ -29,7 +29,7 @@ const addToFavorite = async (item) => {
   try {
     if (!item.isFavorite) {
       const obj = {
-        parentId: item.id
+        item_id: item.id
       };
       item.isFavorite = true;
       const {data} = await axios.post(`https://af3c46b46dc5a452.mokky.dev/favorites`, obj);
@@ -47,7 +47,7 @@ const fetchFavorites = async () => {
   try {
     const {data: favorites} = await axios.get(`https://af3c46b46dc5a452.mokky.dev/favorites`)
     items.value = items.value.map(item => {
-      const favorite = favorites.find(favorite => favorite.parentId === item.id);
+      const favorite = favorites.find(favorite => favorite.item_id === item.id);
 
       if (!favorite) {
         return item;
@@ -125,13 +125,15 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="carousel__block">
-    <carousel-component></carousel-component>
+  <div class="content__block flex gap-3 mb-4">
+    <carousel-component class="carousel"></carousel-component>
+    <video class="video-fluid z-depth-1 rounded-2xl" loop autoplay muted playsinline>
+      <source src="/public/carousel/video.mp4" type="video/mp4">
+      <p>Sorry, there's a problem playing this video. Please try using a different browser.</p>
+    </video>
   </div>
   <div class="filter__menu flex justify-between items-center">
-
     <div class="input__and__select flex gap-5 mb-7">
-
       <select
           @change="onChangeSelect"
           class="py-1.5 px-3 border rounded-md outline-none text-slate-500 font-bold cursor-pointer">
@@ -149,7 +151,6 @@ onMounted(async () => {
             placeholder="search..."
             class="border rounded-md py-1.5 pl-12 pr-4 outline-none focus:border-slate-400"/>
       </div>
-
     </div>
   </div>
   <div class="mb-9">
@@ -171,44 +172,56 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.content__block > video {
+  width: 48%;
+  height: 20%;}
+.carousel {
+  width: 52%;
+  height: 20%;}
 
-@media (min-width: 1024px) {
-  .carousel__block {
-    width: 60%;
-    height: 40%;
+
+  @media (max-width: 780px) {
+    .input__and__select {
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+
+    .content__block {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .content__block > video {
+      width: 100%;
+      height: 50%;}
+    .carousel {
+      width: 100%;
+      height: 50%;}
+
+    select {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
   }
 
-}
+  @media (max-width: 600px) {
+    .filter__menu {
+      flex-direction: column;
+      display: flex;
 
-@media (max-width: 768px) {
-  .input__and__select {
-    flex-direction: column;
-    margin-bottom: 20px;
-  }
-
-  select {
-    width: 100%;
-    margin-bottom: 1rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .filter__menu {
-    flex-direction: column;
-    display: flex;
+    }
 
   }
 
-}
+  @media (max-width: 340px) {
+    input {
+      width: 95%;
+    }
 
-@media (max-width: 340px) {
-  input {
-    width: 95%;
+    select {
+      width: 95%;
+      margin-bottom: 1rem;
+    }
   }
-
-  select {
-    width: 95%;
-    margin-bottom: 1rem;
-  }
-}
 </style>

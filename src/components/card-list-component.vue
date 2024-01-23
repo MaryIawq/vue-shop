@@ -27,8 +27,8 @@ const emit = defineEmits(['addToFavorite', 'addToCart']);
         :fat="item.fat"
         :carbs="item.carbs"
         :kkal="item.kkal"
-        :on-click-favorite="() => emit('addToFavorite', item)"
-        :on-click-add="() => emit('addToCart', item)">
+        :on-click-favorite=" () => emit('addToFavorite', item)"
+        :on-click-add=" () => emit('addToCart', item)">
     </card-component>
   </div>
 </template>

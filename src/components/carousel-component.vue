@@ -12,7 +12,6 @@ const components = {
 
 const pics = [
   '../../public/carousel/carousel_straw_cake_for_new.png',
-  '../../public/carousel/carousel_15_700.png',
 
 ]
 </script>

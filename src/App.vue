@@ -4,7 +4,6 @@ import {ref, watch, provide, computed} from "vue";
 import axios from "axios";
 import headerComponent from './components/header-component.vue'
 import drawerComponent from './components/drawer-component.vue'
-import Home from './pages/home.vue'
 
 
 /* Drawer (START) */
@@ -92,7 +91,9 @@ provide('cart', {
                         @close-drawer="closeDrawer"></drawer-component>
     </div>
     <div class="p-7 main">
-      <home></home>
+      <router-view>
+
+      </router-view>
     </div>
   </div>
 </template>
