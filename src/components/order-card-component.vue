@@ -15,5 +15,11 @@
 </template>
 
 <style scoped>
-
+@media (max-width:760px) {
+  .order__card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
 </style>

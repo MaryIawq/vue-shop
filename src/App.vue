@@ -56,10 +56,6 @@ const createOrder = async () => {
     isCreatingOrder.value = false
   }
 }
-/* Drawer (END) */
-
-
-
 watch(cart, () => {
       localStorage.setItem('cart', JSON.stringify(cart.value))
     },
@@ -71,6 +67,7 @@ provide('cart', {
   addToCart,
   removeFromCart,
 })
+/* Drawer (END) */
 </script>
 
 
@@ -102,6 +99,10 @@ provide('cart', {
 .cart-container {
   max-height: 60vh;
 }
-
+@media (max-width: 425px) {
+  .main{
+    padding: 7px
+  }
+}
 
 </style>

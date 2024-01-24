@@ -3,14 +3,12 @@ import cardListComponent from '../components/card-list-component.vue'
 import categoriesComponent from '../components/categories-component.vue'
 import carouselComponent from '../components/carousel-component.vue'
 import axios from "axios";
-import {inject, onMounted, reactive, ref, watch} from "vue";
+import {inject, onMounted, provide, reactive, ref, watch} from "vue";
+
+/*ADD TO CART START*/
+const items = ref([]);
 
 const {cart, addToCart, removeFromCart} = inject('cart')
-const items = ref([]);
-const filters = reactive({
-  sortBy: 'title',
-  searchQuery: '',
-});
 const onClickAddPlus = (item) => {
   if (!item.isAdded) {
     addToCart(item)
@@ -18,6 +16,33 @@ const onClickAddPlus = (item) => {
     removeFromCart(item)
   }
 }
+
+onMounted(async () => {
+  const localCart = localStorage.getItem('cart');
+  cart.value = localCart ? JSON.parse(localCart) : []
+
+  await fetchItems();
+  await fetchFavorites();
+
+  items.value = items.value.map((item) => ({
+    ...item,
+    isAdded: cart.value.some((cartItem) => cartItem.id === item.id)
+  }))
+});
+
+watch(cart, () => {
+  items.value = items.value.map((item) => ({
+    ...item,
+    isAdded: false
+  }))
+})
+/*ADD TO CART END*/
+
+/*FILTERS START*/
+const filters = reactive({
+  sortBy: 'title',
+  searchQuery: '',
+});
 const onChangeSelect = event => {
   filters.sortBy = event.target.value
   fetchFavorites()
@@ -25,43 +50,9 @@ const onChangeSelect = event => {
 const onChangeSearchInput = event => {
   filters.searchQuery = event.target.value
 }
-const addToFavorite = async (item) => {
-  try {
-    if (!item.isFavorite) {
-      const obj = {
-        item_id: item.id
-      };
-      item.isFavorite = true;
-      const {data} = await axios.post(`https://af3c46b46dc5a452.mokky.dev/favorites`, obj);
-      item.favoriteId = data.id;
-    } else {
-      item.isFavorite = false;
-      await axios.delete(`https://af3c46b46dc5a452.mokky.dev/favorites/${item.favoriteId}`)
-      item.favoriteId = null;
-    }
-  } catch (err) {
-    console.log(err);
-  }
-}
-const fetchFavorites = async () => {
-  try {
-    const {data: favorites} = await axios.get(`https://af3c46b46dc5a452.mokky.dev/favorites`)
-    items.value = items.value.map(item => {
-      const favorite = favorites.find(favorite => favorite.item_id === item.id);
+/*FILTERS END*/
 
-      if (!favorite) {
-        return item;
-      }
-      return {
-        ...item,
-        isFavorite: true,
-        favoriteId: favorite.id,
-      };
-    });
-  } catch (err) {
-    console.log(err);
-  }
-}
+/*FAVORITES AND ITEMS START*/
 const fetchItems = async () => {
   try {
     const params = {
@@ -90,29 +81,53 @@ const updateItems = async (newItems) => {
   items.value = newItems;
   await fetchFavorites()
 }
+const addToFavorite = async (item) => {
+  try {
+    if (!item.isFavorite) {
+      const obj = {
+        item_id: item.id
+      };
+      item.isFavorite = true;
+      const {data} = await axios.post(`https://af3c46b46dc5a452.mokky.dev/favorites`, obj);
+      item.favoriteId = data.id;
+    } else {
+      item.isFavorite = false;
+      await axios.delete(`https://af3c46b46dc5a452.mokky.dev/favorites/${item.favoriteId}`)
+      item.favoriteId = null;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
 
-onMounted(async () => {
-  const localCart = localStorage.getItem('cart');
-  cart.value = localCart ? JSON.parse(localCart) : []
+const fetchFavorites = async () => {
+  try {
+    const {data: favorites} = await axios.get(`https://af3c46b46dc5a452.mokky.dev/favorites`)
+    items.value = items.value.map(item => {
+      const favorite = favorites.find(favorite => favorite.item_id === item.id);
 
-  await fetchItems();
-  await fetchFavorites();
+      if (!favorite) {
+        return item;
+      }
+      return {
+        ...item,
+        isFavorite: true,
+        favoriteId: favorite.id,
+      };
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
 
-  items.value = items.value.map((item) => ({
-    ...item,
-    isAdded: cart.value.some((cartItem) => cartItem.id === item.id)
-  }))
-});
-watch(cart, () => {
-  items.value = items.value.map((item) => ({
-    ...item,
-    isAdded: false
-  }))
-})
 watch(filters, fetchItems);
 
-/*categories functional (START)*/
+
+/*FAVORITES AND ITEMS END*/
+
+/*CATEGORIES START*/
 let categoriesItems = ref([]);
+
 onMounted(async () => {
   try {
     const {data} = await axios.get('https://af3c46b46dc5a452.mokky.dev/categories')
@@ -121,7 +136,7 @@ onMounted(async () => {
     console.log(err)
   }
 })
-/*categories functional (END)*/
+/*CATEGORIES END*/
 </script>
 
 <template>
@@ -132,6 +147,7 @@ onMounted(async () => {
       <p>Sorry, there's a problem playing this video. Please try using a different browser.</p>
     </video>
   </div>
+
   <div class="filter__menu flex justify-between items-center">
     <div class="input__and__select flex gap-5 mb-7">
       <select
@@ -153,9 +169,6 @@ onMounted(async () => {
       </div>
     </div>
   </div>
-  <div class="mb-9">
-
-  </div>
 
   <categories-component
       :categories-items="categoriesItems"
@@ -174,54 +187,56 @@ onMounted(async () => {
 <style scoped>
 .content__block > video {
   width: 48%;
-  height: 20%;}
+  height: 20%;
+}
 .carousel {
   width: 52%;
-  height: 20%;}
-
-
-  @media (max-width: 780px) {
-    .input__and__select {
-      flex-direction: column;
-      margin-bottom: 20px;
-    }
-
-    .content__block {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-    .content__block > video {
-      width: 100%;
-      height: 50%;}
-    .carousel {
-      width: 100%;
-      height: 50%;}
-
-    select {
-      width: 100%;
-      margin-bottom: 1rem;
-    }
+  height: 20%;
+}
+@media (max-width: 780px) {
+  .input__and__select {
+    flex-direction: column;
+    margin-bottom: 20px;
   }
 
-  @media (max-width: 600px) {
-    .filter__menu {
-      flex-direction: column;
-      display: flex;
-
-    }
-
+  .content__block {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
-  @media (max-width: 340px) {
-    input {
-      width: 95%;
-    }
-
-    select {
-      width: 95%;
-      margin-bottom: 1rem;
-    }
+  .content__block > video {
+    width: 100%;
+    height: 50%;
   }
+
+  .carousel {
+    width: 100%;
+    height: 50%;
+  }
+
+  select {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .filter__menu {
+    flex-direction: column;
+    display: flex;
+  }
+}
+
+@media (max-width: 340px) {
+  input {
+    width: 95%;
+  }
+
+  select {
+    width: 95%;
+    margin-bottom: 1rem;
+  }
+}
 </style>
