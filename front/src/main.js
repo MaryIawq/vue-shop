@@ -6,8 +6,8 @@ import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
 import App from './App.vue'
 const app = createApp(App)
 
-import Home from './pages/home.vue'
-import Favorites from './pages/favorites.vue'
+import Home from './pages/Home.vue'
+import Favorites from './pages/Favorites.vue'
 import Profile from "@/pages/Profile.vue";
 
 const routes = [
@@ -15,8 +15,6 @@ const routes = [
     { path: '/favorites', name: 'Favorites', component: Favorites },
     { path: '/profile', name: 'Profile', component: Profile },
 ]
-
-
 
 const router = createRouter({
     history: createWebHistory(),

@@ -1,9 +1,14 @@
 package api
 
 import (
-	"back/internal/config"
 	"fmt"
 	"net/http"
+
+	authAPI "back/internal/api/handlers/auth"
+	paymentAPI "back/internal/api/handlers/payment"
+	productsAPI "back/internal/api/handlers/products"
+	"back/internal/api/middleware"
+	"back/internal/config"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,12 +23,36 @@ func InitServer(handler http.Handler) *http.Server {
 
 func InitRoutes() *gin.Engine {
 	router := gin.New()
+	router.Use(middleware.CORS)
 
-	router.GET("/", handler)
+	auth := router.Group("/auth")
+	{
+		auth.POST("/login", authAPI.Login)
+		auth.POST("/register", authAPI.Register)
+
+		auth.GET("/logout", authAPI.Logout)
+		auth.GET("/getUser", authAPI.GetUser)
+	}
+
+	admin := router.Group("/admin")
+	{
+		admin.GET("/admin", productsAPI.GetAll)
+	}
+
+	user := router.Group("/user")
+	{
+		user.GET("/user", productsAPI.GetAll)
+	}
+
+	products := router.Group("/products")
+	{
+		products.GET("/products/getAll", productsAPI.GetAll)
+	}
+
+	payment := router.Group("/payment", middleware.Authentication)
+	{
+		payment.POST("/getToken", paymentAPI.GetToken)
+	}
 
 	return router
-}
-
-func handler(ctx *gin.Context) {
-	ctx.JSON(200, "hello")
 }

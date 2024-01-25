@@ -1,9 +1,8 @@
 <script setup>
-import {computed} from "vue"
 import cartListComponent from './cart-list-component.vue'
 import infoBlock from "@/components/infoblock.vue";
 
-const emit = defineEmits(['closeDrawer, createOrder']);
+const emit = defineEmits(['closeDrawer, create-order']);
 const props = defineProps({
   finalPrice: Number,
   totalPrice: Number,
@@ -12,14 +11,55 @@ const props = defineProps({
   cartButtonDisabled: Boolean
 })
 
-const checkout = async () => {
+
+let confirmation_token = ''; 
+const checkout = async () => {     
+  console.log("init checkout")
+  const uuid = crypto.randomUUID()
+  console.log("init UUID: " + uuid)
+
+  fetch('http://127.0.0.1:8080/payment/getToken', {
+    method: "POST",
+    body: JSON.stringify({
+      price: props.finalPrice,
+      idempotence_key: uuid,
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    confirmation_token = data
+    console.log("about to render form")
+    renderPayForm()
+  })
 }
 
+const renderPayForm = async () => {
+  const checkout = new window.YooMoneyCheckoutWidget({
 
+  confirmation_token: confirmation_token, 
+    error_callback: function(error) {
+      console.log(error)
+    }
+  });
+  checkout.on('success', () => {
+    checkout.destroy();
+  });
+
+  checkout.on('fail', () => {  
+    checkout.destroy();
+  });
+
+  //Отображение платежной формы в контейнере
+  checkout.render('payment-form');
+}
+
+  const script = document.createElement('script');
+  script.src = 'https://yookassa.ru/checkout-widget/v1/checkout-widget.js';
+  script.async = true;
+  document.head.appendChild(script);
 </script>
 
 <template>
-
   <div @click="() => emit('closeDrawer')"
       class="fixed top-0 left-0 h-full w-full bg-slate-900 z-10 opacity-60">
   </div>
@@ -74,7 +114,7 @@ const checkout = async () => {
         <span>{{ finalPrice }}₽</span>
       </div>
       <button
-          @click="() => emit('createOrder')"
+          @click="checkout()"
           :disabled="cartButtonDisabled"
           class="bg-lime-300 w-full disabled:bg-slate-300 rounded-2xl py-3 mt-5 transition font-bold text-slate-700 cursor-pointer hover:bg-lime-400 active:bg-lime-500">
         place an order

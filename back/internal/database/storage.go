@@ -19,7 +19,7 @@ func InitDB() error {
 		config.JSON.MySQL.Port,
 		config.JSON.MySQL.Database,
 	)
-	fmt.Println(dsn)
+
 	var err error
 	MySQL, err = sqlx.Connect("mysql", dsn)
 	if err != nil {

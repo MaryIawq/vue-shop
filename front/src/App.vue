@@ -43,11 +43,13 @@ const removeFromCart = (item) => {
 
 const createOrder = async () => {
   try {
-    isCreatingOrder.value = true
-    const {data} = await axios.post(`https://af3c46b46dc5a452.mokky.dev/orders`, {
-      items: cart.value,
-      totalPrice: totalPrice.value
-    })
+    isCreatingOrder.value = true;
+    idempotence_key = crypto.randomUUID;
+    const {data} = await axios.post(`https://localhost8080/payment/getToken`, {
+      idempotence_key: idempotence_key,
+      price: totalPrice.value
+    });
+
     cart.value = []
     return data
   } catch (e) {
