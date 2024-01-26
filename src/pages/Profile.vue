@@ -1,6 +1,15 @@
 <script setup>
 import OrdersComponent from "@/components/orders-component.vue";
+import RequestsComponent from "@/components/request-info-component.vue";
+import {ref} from "vue";
 
+const shownUserInfo = ref('requests')
+const showOrders = () => {
+  shownUserInfo.value = 'orders'
+}
+const showRequests = () => {
+  shownUserInfo.value = 'requests'
+}
 </script>
 
 <template>
@@ -44,15 +53,15 @@ import OrdersComponent from "@/components/orders-component.vue";
           <span class="discount text-lg text-stone-500 font-semibold">your discount 5%</span>
         </div>
         <div class="media__btns gap-2 mt-8 flex items-center">
-          <button
+          <button @click="showOrders"
               class="h-11 w-11 border-2 border-stone-400 bg-neutral-200 rounded-3xl transition hover:brightness-110">
-            <img class="p-1" src="/purchases.png" alt="purchases"></button>
+            <img class="p-1" src="/purchases.png" alt="orders"></button>
           <button class="h-12 w-12 border-2 border-stone-400 bg-white rounded-3xl transition hover:brightness-110"><img
               class="p-1" src="/payment.png" alt="payment"></button>
           <button
               class="h-12 w-12 border-2 border-stone-400 bg-neutral-200 rounded-3xl transition hover:brightness-110">
             <img class="p-1" src="/points.png" alt="points"></button>
-          <button class="h-12 w-12 border-2 border-stone-400 bg-white rounded-3xl transition hover:brightness-110"><img
+          <button @click="showRequests" class="h-12 w-12 border-2 border-stone-400 bg-white rounded-3xl transition hover:brightness-110"><img
               class="p-1" src="/requests.png" alt="requests"></button>
         </div>
         <div class="mt-6 flex items-center gap-6">
@@ -63,8 +72,9 @@ import OrdersComponent from "@/components/orders-component.vue";
           </router-link>
         </div>
       </div>
-      <div class="info__profile">
-        <orders-component></orders-component>
+      <div v-auto-animate class="info__profile flex flex-col relative items-center max-w-96 w-full bg-stone-50 shadow-2xl mt-10 rounded-2xl p-7 mb-8">
+        <orders-component v-if="shownUserInfo === 'orders'"></orders-component>
+        <requests-component  v-if="shownUserInfo === 'requests'"></requests-component>
       </div>
     </div>
 

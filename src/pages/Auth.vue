@@ -21,7 +21,7 @@ const showForgetPassword = () => {
 <template>
   <div v-auto-animate>
     <h1 class="text-4xl font-bold text-neutral-500 text-center mb-10">please login or register to continue shopping</h1>
-    <div class="flex justify-center gap-20 mb-3 text-neutral-600 text-xl font-bold">
+    <div class="flex justify-center gap-12 mb-3 text-neutral-600 text-xl font-bold">
       <button @click="showLogin" :class="{ 'active-button': currentComponent === 'login' }" class="p-4 translate-y-5 rounded-t-2xl" :disabled="currentComponent === 'login'">login</button>
       <button @click="showRegister" :class="{ 'active-button': currentComponent === 'register' }" class="p-4 translate-y-5 rounded-t-2xl" :disabled="currentComponent === 'register'">register</button>
     </div>
