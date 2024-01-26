@@ -56,9 +56,11 @@ import OrdersComponent from "@/components/orders-component.vue";
               class="p-1" src="/requests.png" alt="requests"></button>
         </div>
         <div class="mt-6 flex items-center gap-6">
-          <button class=" rounded-3xl border-2 border-stone-400 transition p-2 hover:-translate-y-0.5 hover:shadow-lg">
-            exit
-          </button>
+          <router-link to="/auth">
+            <button class=" rounded-3xl border-2 border-stone-400 transition p-2 hover:-translate-y-0.5 hover:shadow-lg">
+              exit
+            </button>
+          </router-link>
         </div>
       </div>
       <div class="info__profile">
