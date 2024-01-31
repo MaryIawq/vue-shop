@@ -1,21 +1,28 @@
 <script setup>
-import {computed} from "vue"
-import cartListComponent from './cart-list-component.vue'
+import { computed, ref } from "vue";
+import cartListComponent from './cart-list-component.vue';
 import infoBlock from "@/components/infoblock.vue";
 
-const emit = defineEmits(['closeDrawer, createOrder']);
+const emit = defineEmits(['closeDrawer', 'createOrder']);
 const props = defineProps({
   finalPrice: Number,
   totalPrice: Number,
   deliveryPrice: Number,
   discountPrice: Number,
   cartButtonDisabled: Boolean
-})
+});
 
-const checkout = async () => {
-}
+const enteredPromoCode = ref('');
+const promoCodes = ['NEW01', '1234', 'QWERTY'];
 
-
+const applyPromoCode = () => {
+  const promoCodeEntered = enteredPromoCode.value.toUpperCase();
+  if (promoCodes.includes(promoCodeEntered)) {
+    alert('Promo code applied successfully');
+  } else {
+    alert('Invalid promo code');
+  }
+};
 </script>
 
 <template>
@@ -32,6 +39,7 @@ const checkout = async () => {
            alt="right arrow">
       <h1 class="text-slate-600 text-2xl text-center font-bold">shopping cart</h1>
     </div>
+
     <div v-if="!totalPrice"
         class="h-full flex items-center">
       <infoBlock
@@ -43,15 +51,13 @@ const checkout = async () => {
     </div>
 
     <cart-list-component v-if="totalPrice"></cart-list-component>
-
     <div
         v-if="totalPrice"
         class="costing__container flex flex-col gap-4 mt-7">
       <div class="flex gap-2 text-slate-500 font-bold uppercase mb-3">
-        <span>Promocode:</span>
-        <input type="text"
-               class="w-28 mb-2 text-green-700 border uppercase rounded-2xl outline-none focus:border-slate-400"/>
-        <img class="w-7 h-7 cursor-pointer transition opacity-75 hover:opacity-100" src="/apply.png" alt="apply"/>
+        <span>PromoCode:</span>
+        <input v-model="enteredPromoCode" type="text" class="w-28 mb-2 text-green-700 border uppercase rounded-2xl outline-none focus:border-slate-400"/>
+        <img @click="applyPromoCode" class="w-7 h-7 cursor-pointer transition opacity-75 hover:opacity-100" src="/apply.png" alt="apply"/>
       </div>
       <div class="flex gap-2 text-slate-600">
         <span>Order amount:</span>

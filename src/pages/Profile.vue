@@ -3,7 +3,7 @@ import OrdersComponent from "@/components/orders-component.vue";
 import RequestsComponent from "@/components/request-info-component.vue";
 import {ref} from "vue";
 
-const shownUserInfo = ref('requests')
+const shownUserInfo = ref('orders')
 const showOrders = () => {
   shownUserInfo.value = 'orders'
 }
@@ -39,9 +39,8 @@ const showRequests = () => {
     </div>
 
 
-    <div class="profile w-6/12 flex flex-col items-center gap-10 justify-center">
-      <div
-          class="profile__card flex flex-col relative items-center max-w-96 w-full bg-stone-50 shadow-2xl mt-10 rounded-2xl p-7">
+    <div class="profile w-6/12 flex flex-col items-center gap-5 justify-center">
+      <div class="profile__card flex flex-col relative items-center max-w-96 w-full bg-stone-50 shadow-2xl mt-10 rounded-2xl p-7">
         <div class="img__container mb-2.5 relative h-36 w-36 rounded-full border-stone-300 border-4 bg-stone-50">
           <img
               class="h-full w-full object-cover p-4"

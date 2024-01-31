@@ -1,39 +1,22 @@
 <script setup>
+import CurrentOrder from "@/components/current-order.vue";
+import {defineProps} from 'vue';
 
-import OrderCardComponent from "@/components/order-card-component.vue";
+const props = defineProps({
+  currentOrders: Array,
+});
+console.log(props)
+
 </script>
 
 <template>
-  <div class="bg-white p-3 rounded-2xl">
-    <order-card-component></order-card-component>
-    <order-card-component></order-card-component>
-    <order-card-component></order-card-component>
-    <div class="text-slate-600 bg-neutral-100 p-2 pl-4 rounded-2xl mt-3">
-      <div class="flex justify-between border-b-2 mb-2 border-stone-400">
-        <b>order status: </b>
-        <p>in delivery</p>
-      </div>
-      <div class="flex justify-between border-b-2 mb-2 border-stone-400">
-        <b>payable: </b>
-        <p>764 ₽</p>
-      </div>
-      <div class="flex justify-between border-b-2 mb-2 border-stone-400">
-        <b>delivered in: </b>
-        <p>20 min</p>
-      </div>
-      <div class="btn__group flex gap-2 mt-4">
-        <button class="p-2 border rounded-2xl bg-white transition hover:-translate-y-0.5 hover:shadow-lg">contact the courier</button>
-        <button class="p-2 border rounded-2xl bg-white transition hover:-translate-y-0.5 hover:shadow-lg">map</button>
-      </div>
-    </div>
+  <h2 class="uppercase font-bold mt-4 text-stone-600 text-xl text-center">current</h2>
+  <div class="bg-white shadow-xl rounded-2xl" v-for="order in props.currentOrders">
+    <current-order :items="order.items"></current-order>
   </div>
 
 </template>
 
 <style scoped>
-@media (max-width:760px) {
-  .btn__group {
-    flex-direction: column;
-  }
-}
+
 </style>
