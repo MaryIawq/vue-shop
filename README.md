@@ -20,3 +20,8 @@ npm run dev
 ```sh
 npm run build
 ```
+### Screenshots:
+![proile](https://github.com/MaryIawq/vue-shop/assets/152361912/0327f776-c3c6-40f6-9770-2d44ecb443ec)
+![requests](https://github.com/MaryIawq/vue-shop/assets/152361912/d5987914-1ac7-441f-91de-292a529d2db6)
+![news](https://github.com/MaryIawq/vue-shop/assets/152361912/61d740a8-752e-46d4-a7b7-3135e1a99bae)
+![orders](https://github.com/MaryIawq/vue-shop/assets/152361912/9fd12be6-dd9a-4969-b9d4-e1b785cce875)
