@@ -20,7 +20,7 @@ const finalPrice = computed(() => {
 });
 
 const cartButtonDisabled = computed(() =>
-    isCreatingOrder.value ? true : totalPrice.value ? false : true
+    isCreatingOrder.value ? true : !totalPrice.value
 )
 
 const closeDrawer = () => {
