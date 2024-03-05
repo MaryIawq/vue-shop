@@ -32,7 +32,7 @@ const showEmail = () => {
 
 
     <div class="bottom__header flex justify-between border-b border-gray-200 py-10 px-4 md:pr-12">
-      <router-link to="/">
+      <router-link to="/vue-shop">
         <div class="flex mr-6 items-center gap-4" id="logo">
           <img src="/logo.png" alt="logo" class="w-16 h-16">
           <div>
@@ -42,7 +42,7 @@ const showEmail = () => {
         </div>
       </router-link>
       <ul class="flex items-center gap-6 mt-1 mr-3">
-        <router-link to="/">
+        <router-link to="/vue-shop">
           <li class="flex opacity-75 transition hover:opacity-100 hover:-translate-y-0.5 items-center cursor-pointer gap-0.5">
             <img src="/home.png" class="w-7 opacity-75" alt="home">
             <p class="text-sm md:text-base text-slate-700">home</p>
@@ -52,13 +52,13 @@ const showEmail = () => {
           <img src="/cart.svg" class="w-7" alt="cart">
           <p class="text-sm md:text-base text-slate-700">{{ totalPrice }}₽</p>
         </li>
-        <router-link to="/Favorites">
+        <router-link to="/favorites">
           <li class="flex opacity-75 transition hover:opacity-100 hover:-translate-y-0.5 items-center cursor-pointer gap-0.5">
             <img src="/favorites.ico" class="w-7" alt="favorites">
             <p class="text-sm md:text-base text-slate-700">favorites</p>
           </li>
         </router-link>
-        <router-link to="/Profile">
+        <router-link to="/profile">
           <li class="flex opacity-75 transition hover:opacity-100 hover:-translate-y-0.5 items-center cursor-pointer gap-0.5">
             <img src="/profile.svg" class="w-7" alt="profile">
             <p class="text-sm md:text-base text-slate-700">profile</p>

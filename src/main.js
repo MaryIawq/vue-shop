@@ -18,7 +18,7 @@ import NewsPromotionsComponent from '@/components/news-promotions-component.vue'
 import ReviewsComponent from '@/components/reviews-component.vue';
 
 const routes = [
-    {path: '/vue-shop/', name: 'Home', component: Home},
+    {path: '/vue-shop', name: 'Home', component: Home},
     {path: '/favorites', name: 'Favorites', component: Favorites},
     {path: '/profile', name: 'Profile', component: Profile},
     {path: '/auth', name: 'Auth', component: Auth},
